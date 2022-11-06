@@ -154,4 +154,6 @@ public class DrawPanel extends JPanel {
         ScreenPoint p2 = sc.r2s(l.getP2());
         ld.drawLine(p1.getX(),p1.getY(), p2.getX(), p2.getY());
     }
+
+
 }

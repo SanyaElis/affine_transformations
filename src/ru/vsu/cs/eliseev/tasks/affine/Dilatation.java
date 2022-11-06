@@ -11,4 +11,9 @@ public class Dilatation implements IAffine{//Масштабирование a, b
     public RealPoint pointConversion(RealPoint p) {
         return new RealPoint(p.getX() * kx, p.getY() * ky);
     }
+
+    public Dilatation(double kx, double ky) {
+        this.kx = kx;
+        this.ky = ky;
+    }
 }
