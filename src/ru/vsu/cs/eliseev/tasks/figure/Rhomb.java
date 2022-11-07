@@ -30,4 +30,9 @@ public class Rhomb implements IFigure{
            prev = p;
         }
     }
+
+    @Override
+    public List<RealPoint> getPoints() {
+        return points;
+    }
 }

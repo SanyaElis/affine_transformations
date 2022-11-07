@@ -3,6 +3,8 @@ package ru.vsu.cs.eliseev.tasks;
 import ru.vsu.cs.eliseev.tasks.affine.*;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +23,8 @@ public class Monolog extends JDialog {
     private JComboBox<Integer> reflectionY;
     private JTextField translationY;
     private JTextField dilatationY;
+    private DrawPanel myPanel;
+    private JButton clean;
     private List<IAffine> transformations = new ArrayList<>();
 
     public Monolog() {
@@ -57,11 +61,14 @@ public class Monolog extends JDialog {
             }
         });
 
-        solutionButton.addActionListener(e -> {//полетит в DrawPanel
+        solutionButton.addActionListener(e -> {
             System.out.println(transformations.size());
             Transformation tr = new Transformation(transformations);
+            myPanel.transformFigures(tr);
             transformations.clear();
         });
+
+        clean.addActionListener(e -> transformations.clear());
     }
 
     public static void main(String[] args) {

@@ -9,5 +9,5 @@ import java.util.List;
 public interface IFigure {
 
     void drawFigure(List<RealPoint> points, ScreenConverter sc, LineDrawer ld);
-
+    List<RealPoint> getPoints();
 }
