@@ -3,6 +3,7 @@ package ru.vsu.cs.eliseev.tasks;
 import ru.vsu.cs.eliseev.tasks.affine.Transformation;
 import ru.vsu.cs.eliseev.tasks.drawers.*;
 import ru.vsu.cs.eliseev.tasks.figure.IFigure;
+import ru.vsu.cs.eliseev.tasks.figure.Rhomb;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,8 +19,10 @@ public class DrawPanel extends JPanel {
     private Point lastP;
     private List<Line> lines = new ArrayList<>();
     private List<IFigure> figures = new ArrayList<>();
-    private final double GRID_SIZE = 15;
+    private double GRID_SIZE = 15;
     private final double unitInterval = 1;
+    private int DEFAULT_FONT_SIZE = 11;
+    private Font font = null;
 
 //    private static Line findLines(List<Line> lines, ScreenConverter sc, ScreenPoint sp, int eps){
 //        Line answer = null;
@@ -40,13 +43,20 @@ public class DrawPanel extends JPanel {
         converter = new ScreenConverter(800,600, -GRID_SIZE, GRID_SIZE, 2 * GRID_SIZE, 2 * GRID_SIZE);
         ox = new Line(new RealPoint(-GRID_SIZE ,0), new RealPoint(GRID_SIZE,0));
         oy = new Line(new RealPoint(0,-GRID_SIZE), new RealPoint(0, GRID_SIZE));
-
+        List<RealPoint> pointsForRhomb = new ArrayList<>();
+        pointsForRhomb.add(new RealPoint(2, 0));
+        pointsForRhomb.add(new RealPoint(0, 3));
+        pointsForRhomb.add(new RealPoint(2, 6));
+        pointsForRhomb.add(new RealPoint(4, 3));
+        IFigure rhomb = new Rhomb(pointsForRhomb);
+        figures.add(rhomb);
         this.addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if(lastP != null){
                     Point curP = e.getPoint();
-                    ScreenPoint delta = new ScreenPoint(curP.x - lastP.x,curP.y - lastP.y);
+                    //ScreenPoint delta = new ScreenPoint(curP.x - lastP.x,curP.y - lastP.y);
+                    ScreenPoint delta = new ScreenPoint(-curP.x + lastP.x,- curP.y +  lastP.y);
                     RealPoint deltaR = converter.s2r(delta);
                     converter.setX(deltaR.getX());
                     converter.setY(deltaR.getY());
@@ -61,11 +71,11 @@ public class DrawPanel extends JPanel {
 
             @Override
             public void mouseMoved(MouseEvent e) {
-               /* *//*currentX = e.getX();
-                currentY = e.getY();*//*
-                ScreenPoint sp = new ScreenPoint(e.getX(), e.getY());
-                current.setP2(converter.s2r(sp));
-                repaint();*/
+//                currentX = e.getX();
+//                currentY = e.getY();
+//                ScreenPoint sp = new ScreenPoint(e.getX(), e.getY());
+//                current.setP2(converter.s2r(sp));
+//                repaint();
             }
         });
         this.addMouseListener(new MouseListener() {
@@ -114,6 +124,9 @@ public class DrawPanel extends JPanel {
             for (int i = Math.abs(count); i > 0; i--) {
                 kf *= base;
             }
+            GRID_SIZE += 1 * Math.signum(count);
+            ox = new Line(new RealPoint(-GRID_SIZE ,0), new RealPoint(GRID_SIZE,0));
+            oy = new Line(new RealPoint(0,-GRID_SIZE), new RealPoint(0, GRID_SIZE));
             converter.setWidth(converter.getWidth() * kf);
             converter.setHeight(converter.getHeight() * kf);
             repaint();
@@ -140,12 +153,14 @@ public class DrawPanel extends JPanel {
         drawLine(ld,converter,ox);
         drawLine(ld,converter,oy);
 
-        drawGridOnOx(ld, converter);
-        drawGridOnOy(ld, converter);
-
-        for (Line l: lines) {
-          drawLine(ld, converter, l);
+        drawGridOnOx(ld, converter, biG);
+        drawGridOnOy(ld, converter, biG);
+        for (IFigure figure: figures) {
+            figure.drawFigure(figure.getPoints(), converter, ld);
         }
+//        for (Line l: lines) {
+//          drawLine(ld, converter, l);
+//        }
      /*   if (current != null){
             drawLine(ld,converter,current);
         }*/
@@ -161,20 +176,54 @@ public class DrawPanel extends JPanel {
 
     public void transformFigures(Transformation tr){
         for (IFigure figure: figures) {
+            List<RealPoint> newPoints = new ArrayList<>();
             for (RealPoint p: figure.getPoints()) {
-                p = tr.pointConversion(p);
+                newPoints.add(tr.pointConversion(p));
+            }
+            figure.setPoints(newPoints);
+        }
+        repaint();
+    }
+    private void drawGridOnOy(LineDrawer drawer, ScreenConverter converter, Graphics2D g2d){
+        for (int i = 0; i < 2 * GRID_SIZE; i++) {
+            RealPoint p1 = new RealPoint( - 0.1,-GRID_SIZE + (i + unitInterval));
+            RealPoint p2 = new RealPoint( 0.1, -GRID_SIZE + (i + unitInterval));
+            ScreenPoint sp = converter.r2s(p1);
+            drawLine(drawer,converter,new Line(p1, p2));
+            g2d.setFont(getFont(DEFAULT_FONT_SIZE));
+            if(-GRID_SIZE + 1 + i != 0 && i % 2 == 0){
+                g2d.drawString((int)-GRID_SIZE + 1 + i + "", sp.getX() + 10, sp.getY());
             }
         }
     }
-    private void drawGridOnOy(LineDrawer drawer, ScreenConverter converter){
+
+    private void drawGridOnOx(LineDrawer drawer, ScreenConverter converter, Graphics2D g2d){
         for (int i = 0; i < 2 * GRID_SIZE; i++) {
-            drawLine(drawer,converter,new Line(new RealPoint( - 0.1,-GRID_SIZE + (i + unitInterval)), new RealPoint( 0.1, -GRID_SIZE + (i + unitInterval))));
+            RealPoint p1 = new RealPoint(-GRID_SIZE + (i + unitInterval),0.1);
+            RealPoint p2 = new RealPoint(-GRID_SIZE  + (i + unitInterval),-0.1);
+            ScreenPoint sp = converter.r2s(p1);
+            drawLine(drawer,converter,new Line(p1, p2));
+            g2d.setFont(getFont(DEFAULT_FONT_SIZE));
+            if(i % 2 == 0){
+                g2d.drawString((int)-GRID_SIZE + 1 + i + "", sp.getX(), sp.getY());
+            }
         }
     }
-
-    private void drawGridOnOx(LineDrawer drawer, ScreenConverter converter){
-        for (int i = 0; i < 2 * GRID_SIZE; i++) {
-            drawLine(drawer,converter,new Line(new RealPoint(-GRID_SIZE + (i + unitInterval),0.1), new RealPoint(-GRID_SIZE  + (i + unitInterval),-0.1)));
+    public void initFigure(){
+        figures.clear();
+        List<RealPoint> pointsForRhomb = new ArrayList<>();
+        pointsForRhomb.add(new RealPoint(2, 0));
+        pointsForRhomb.add(new RealPoint(0, 3));
+        pointsForRhomb.add(new RealPoint(2, 6));
+        pointsForRhomb.add(new RealPoint(4, 3));
+        IFigure rhomb = new Rhomb(pointsForRhomb);
+        figures.add(rhomb);
+        repaint();
+    }
+    private Font getFont(int size) {
+        if (font == null || font.getSize() != size) {
+            font = new Font("Comic Sans MS", Font.BOLD, size);
         }
+        return font;
     }
 }

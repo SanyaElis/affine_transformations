@@ -29,10 +29,16 @@ public class Rhomb implements IFigure{
            ld.drawLine(sc.r2s(prev).getX(), sc.r2s(prev).getY(), sc.r2s(p).getX(), sc.r2s(p).getY());
            prev = p;
         }
+        ld.drawLine(sc.r2s(prev).getX(), sc.r2s(prev).getY(), sc.r2s(points.get(0)).getX(), sc.r2s(points.get(0)).getY());
     }
 
     @Override
     public List<RealPoint> getPoints() {
         return points;
+    }
+
+    @Override
+    public void setPoints(List<RealPoint> points) {
+        this.points = points;
     }
 }

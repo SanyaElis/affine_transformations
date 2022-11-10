@@ -10,4 +10,5 @@ public interface IFigure {
 
     void drawFigure(List<RealPoint> points, ScreenConverter sc, LineDrawer ld);
     List<RealPoint> getPoints();
+    void setPoints(List<RealPoint> points);
 }

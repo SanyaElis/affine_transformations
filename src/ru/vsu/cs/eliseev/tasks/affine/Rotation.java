@@ -8,8 +8,10 @@ public class Rotation implements IAffine {
 
     @Override
     public RealPoint pointConversion(RealPoint p) {
-        return new RealPoint(p.getX() * Math.cos(angle) - p.getY() * Math.sin(angle),
-                p.getX() * Math.sin(angle) + p.getY() * Math.cos(angle));
+        double angleInRadians = (angle / 180.0) * Math.PI;
+        System.out.println(Math.sin(angleInRadians));
+        return new RealPoint(p.getX() * Math.cos(angleInRadians) - p.getY() * Math.sin(angleInRadians),
+                p.getX() * Math.sin(angleInRadians) + p.getY() * Math.cos(angleInRadians));
     }
 
     public Rotation(double angle) {

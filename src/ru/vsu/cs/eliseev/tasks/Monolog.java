@@ -12,7 +12,7 @@ import java.util.Objects;
 public class Monolog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
-    private JButton buttonCancel;
+    private JButton buttonRestart;
     private JPanel testPanel;
     private JButton addButton;
     private JButton solutionButton;
@@ -62,13 +62,16 @@ public class Monolog extends JDialog {
         });
 
         solutionButton.addActionListener(e -> {
-            System.out.println(transformations.size());
             Transformation tr = new Transformation(transformations);
             myPanel.transformFigures(tr);
             transformations.clear();
         });
 
         clean.addActionListener(e -> transformations.clear());
+
+        buttonRestart.addActionListener(e -> {
+            myPanel.initFigure();
+        });
     }
 
     public static void main(String[] args) {
