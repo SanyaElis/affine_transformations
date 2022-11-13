@@ -10,7 +10,7 @@ public class BresenhamLineDrawer implements LineDrawer {
         this.pd = pd;
     }
 
-    public void drawLine(int x1, int y1, int x2, int y2) {
+    public void drawLine(int x1, int y1, int x2, int y2, Color c) {
         int pdx, pdy, xORyWay1, xORyWay2, a;
 
         int dx = x2 - x1;
@@ -44,7 +44,7 @@ public class BresenhamLineDrawer implements LineDrawer {
                 y1 += pdy;
             }
 
-            pd.drawPixel(x1, y1, Color.BLACK);
+            pd.drawPixel(x1, y1, c);
         }
     }
 }

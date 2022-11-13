@@ -24,7 +24,19 @@ public class ScreenConverter {
         double y = this.y - p.getY() * height / sHeight;
         return new RealPoint(x,y);
     }
+    public void moveCorner(RealPoint delta) {
+        x = delta.getX();
+        y = delta.getY();
+    }
+    public void changeScale(double s) {
 
+        width *= s;
+        height *= s;
+
+        x *= s;
+        y *= s;
+
+    }
     public int getsWidth() {
         return sWidth;
     }
