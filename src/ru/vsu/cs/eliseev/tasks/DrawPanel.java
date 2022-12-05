@@ -37,7 +37,7 @@ public class DrawPanel extends JPanel {
         this.addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (lastP != null){
+                if (lastP != null) {
                     Point curP = e.getPoint();
                     ScreenPoint delta = new ScreenPoint(-curP.x + lastP.x, -curP.y + lastP.y);
                     RealPoint deltaR = converter.s2r(delta);
@@ -103,7 +103,8 @@ public class DrawPanel extends JPanel {
 
         //LineDrawer ld = new GraphicsLineDrawer(biG);
         //LineDrawer ld = new DDALineDrawer(new GraphicsPixelDrawer(biG));
-        LineDrawer ld = new BresenhamLineDrawer(new GraphicsPixelDrawer(biG));
+        LineDrawer ld = new WuLineDrawer(new GraphicsPixelDrawer(biG));
+        //LineDrawer ld = new BresenhamLineDrawer(new GraphicsPixelDrawer(biG));
 
         biG.setColor(Color.BLACK);
         graphic.draw(ld, biG);

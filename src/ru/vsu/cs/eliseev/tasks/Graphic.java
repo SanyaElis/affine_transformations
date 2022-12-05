@@ -7,9 +7,9 @@ import java.text.DecimalFormat;
 
 public class Graphic {
     private final ScreenConverter sc;
-    private final DecimalFormat decimalFormat = new DecimalFormat("#.#");
-    private final int DEFAULT_FONT_SIZE = 11;
     private Font font = null;
+    private final DecimalFormat decimalFormat = new DecimalFormat("#.####");
+    private final int DEFAULT_FONT_SIZE = 11;
 
 
     public Graphic(ScreenConverter sc) {
@@ -21,26 +21,26 @@ public class Graphic {
     }
 
     private void drawCoordinateAndGrid(LineDrawer ld, Graphics2D g2d) {
-        int ax = 96;//кф для насечки
+        int ax = 100;//кф для насечки
         g2d.setFont(getFont(DEFAULT_FONT_SIZE));
         // Draws a grid to the right of the coordinate line
-        for (double x = 0; x < sc.getX() + sc.getWidth(); x += HH(0, sc.getWidth())) {
+        for (double x = 0; x < sc.getX() + sc.getWidth(); x += scaling(0, sc.getWidth())) {
             drawXGrid(ld, g2d, ax, x);
         }
 
         // Draws a grid to the left of the coordinate line
-        for (double x = 0; x > sc.getX() - sc.getWidth(); x -= HH(0, sc.getWidth())) {
+        for (double x = 0; x > sc.getX() - sc.getWidth(); x -= scaling(0, sc.getWidth())) {
             drawXGrid(ld, g2d, ax, x);
 
         }
 
         // Draws a grid to the up of the coordinate line
-        for (double y = 0; y < sc.getY() + sc.getHeight(); y += HH(0, sc.getHeight())) {
+        for (double y = 0; y < sc.getY() + sc.getHeight(); y += scaling(0, sc.getHeight())) {
             drawYGrid(ld, g2d, ax, y);
         }
 
         // Draws a grid to the down of the coordinate line
-        for (double y = 0; y > sc.getY() - sc.getHeight(); y -= HH(0, sc.getHeight())) {
+        for (double y = 0; y > sc.getY() - sc.getHeight(); y -= scaling(0, sc.getHeight())) {
             drawYGrid(ld, g2d, ax, y);
         }
 
@@ -65,13 +65,13 @@ public class Graphic {
     }
 
 
-    private double HH(double a1, double a2) {
+    private double scaling(double a1, double a2) {
         double result = 1;
 
-        while (Math.abs(a2 - a1) / result < 1.0)
-            result /= 10.0;
         while (Math.abs(a2 - a1) / result >= 20.0)
             result *= 10.0;
+        while (Math.abs(a2 - a1) / result < 1.0)
+            result /= 10.0;
 
         if (Math.abs(a2 - a1) / result < 2.0)
             result /= 5.0;
